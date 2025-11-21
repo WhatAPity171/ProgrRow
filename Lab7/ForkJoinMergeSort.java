@@ -15,10 +15,8 @@ public class ForkJoinMergeSort {
         ForkJoinPool pool = ForkJoinPool.commonPool();
 
         long startTime = System.currentTimeMillis();
-        //kopia tablicy jak chcemy wyswietlic oryginal do testow potem
         DivideTask mainTask = new DivideTask(Arrays.copyOf(data, data.length));
 
-        // Metoda invoke() uruchamia zadanie i zwraca jego wynik.
         int[] sortedArray = pool.invoke(mainTask);
 
         long endTime = System.currentTimeMillis();
@@ -37,11 +35,7 @@ public class ForkJoinMergeSort {
         System.out.println("Czas wykonania Arrays.sort (sekwencyjnie): " + sequentialDuration + " ms");
     }
     
-    /**
-     * Generuje tablicę liczb całkowitych o podanym rozmiarze, wypełnioną losowymi wartościami.
-     * @param size Rozmiar tablicy.
-     * @return Nowa tablica z losowymi liczbami.
-     */
+    
     private static int[] generateRandomArray(int size) {
         int[] arr = new int[size];
         Random rand = new Random();
@@ -51,11 +45,7 @@ public class ForkJoinMergeSort {
         return arr;
     }
 
-    /**
-     * Sprawdza, czy podana tablica jest posortowana rosnąco.
-     * @param arr Tablica do sprawdzenia.
-     * @return true, jeśli tablica jest posortowana; false w przeciwnym razie.
-     */
+    
     private static boolean isSorted(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             if (arr[i] > arr[i+1]) {

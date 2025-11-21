@@ -21,32 +21,27 @@ class DivideTask extends RecursiveTask<int[]> {
         
         int mid = arrayToDivide.length / 2;
         
-        // Tworzenie nowych tablic dla lewej i prawej połówki.
+        //tworzenie nowych tablic
         int[] leftHalf = Arrays.copyOfRange(arrayToDivide, 0, mid);
         int[] rightHalf = Arrays.copyOfRange(arrayToDivide, mid, arrayToDivide.length);
         
-        // Utwórz nowe zadania dla każdej połówki.
+        
         DivideTask leftTask = new DivideTask(leftHalf);
         DivideTask rightTask = new DivideTask(rightHalf);
         
         leftTask.fork();
         rightTask.fork();
         int[] sortedRight = rightTask.join();
-        //int[] sortedRight = rightTask.compute();
         int[] sortedLeft = leftTask.join();
         
-        // Po otrzymaniu posortowanych połówek, scal je w jedną posortowaną tablicę.
-        int[] mergedArray = new int[arrayToDivide.length]; // Utwórz nową tablicę na wynik scalania.
+        //Scalanie
+        int[] mergedArray = new int[arrayToDivide.length];
         scal_tab(sortedLeft, sortedRight, mergedArray);
         
         return mergedArray; // Zwróć posortowaną i scaloną tablicę.
     }
     
-    /**
-     * @param tab1 Pierwsza posortowana tablica.
-     * @param tab2 Druga posortowana tablica.
-     * @param scal_tab Tablica docelowa, do której zostaną scalone elementy. Musi mieć wystarczający rozmiar.
-     */
+   
     private void scal_tab(
             int[] tab1,
             int[] tab2,

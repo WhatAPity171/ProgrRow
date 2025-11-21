@@ -4,12 +4,12 @@ import java.util.List;
 public class RunnableIntegralCalculator {
 
     public static void main(String[] args) {
-        double totalStart = 0;               // Całkowita dolna granica całkowania
-        double totalEnd = Math.PI;           // Całkowita górna granica całkowania
-        double dxForAccuracy = 0.000001;     // Parametr dx determinujący dokładność całego obliczenia
+        double totalStart = 0;               
+        double totalEnd = Math.PI;           
+        double dxForAccuracy = 0.000001;     
 
         int N_TASKS_AND_THREADS = Runtime.getRuntime().availableProcessors() * 4; 
-        if (N_TASKS_AND_THREADS < 1) N_TASKS_AND_THREADS = 1; // Zapewnij minimum jeden wątek/zadanie.
+        if (N_TASKS_AND_THREADS < 1) N_TASKS_AND_THREADS = 1;
 
 
         System.out.println("--- Równoległe obliczanie całki (z Runnable i jawnym tworzeniem wątków) ---");
@@ -27,12 +27,12 @@ public class RunnableIntegralCalculator {
 
         long startTime = System.nanoTime();
 
-        // 1. Jawne utworzenie obiektów Calka_runnable i wątków
+        //Jawne utworzenie obiektów Calka_runnable i wątków
         for (int i = 0; i < N_TASKS_AND_THREADS; i++) {
             double subIntervalStart = totalStart + i * subIntervalWidth;
             double subIntervalEnd = subIntervalStart + subIntervalWidth;
 
-            // Korekta dla ostatniego podprzedziału, aby dokładnie zamknąć całkowity przedział
+            //Korekta aby na pewno całość wziąć
             if (i == N_TASKS_AND_THREADS - 1) {
                 subIntervalEnd = totalEnd;
             }
@@ -40,24 +40,23 @@ public class RunnableIntegralCalculator {
             // Utworzenie obiektu Calka_runnable, przekazując mu referencję do agregatora
             Calka_runnable task = new Calka_runnable(subIntervalStart, subIntervalEnd, dxForAccuracy, aggregator);
             
-            // Jawne utworzenie wątku, przekazując mu obiekt Calka_runnable
             Thread thread = new Thread(task);
-            threads.add(thread); // Dodanie wątku do listy
-            thread.start();      // Rozpoczęcie wykonania wątku (wywołanie metody run() Calka_runnable)
+            threads.add(thread);
+            thread.start();      
         }
 
-        // 2. Oczekiwanie na zakończenie wszystkich wątków
+        //Oczekiwanie na zakończenie wszystkich wątków
         for (Thread thread : threads) {
             try {
-                thread.join(); // Metoda join() powoduje, że główny wątek czeka na zakończenie danego wątku
+                thread.join();
             } catch (InterruptedException e) {
                 System.err.println("Wątek główny został przerwany podczas oczekiwania na wątek roboczy: " + e.getMessage());
                 Thread.currentThread().interrupt(); // Przywracamy status przerwania
             }
         }
         
-        long endTime = System.nanoTime();   // Pomiar czasu zakończenia wykonania
-        long duration = (endTime - startTime) / 1_000_000; // Czas w milisekundach
+        long endTime = System.nanoTime(); 
+        long duration = (endTime - startTime) / 1_000_000;
 
         double totalIntegralResult = aggregator.getTotalIntegral(); // Pobranie końcowego wyniku z agregatora
 

@@ -8,9 +8,9 @@ import java.util.Locale;
 public class ParallelIntegralCalculator {
 
     public static void main(String[] args) {
-        double totalStart = 0;               // Całkowita dolna granica
-        double totalEnd = Math.PI;           // Całkowita górna granica
-        //double dxForAccuracy = 0.000001;     // Parametr dx determinujący dokładność całego obliczenia
+        double totalStart = 0;               //dolna granica
+        double totalEnd = Math.PI;           //górna granica
+        //double dxForAccuracy = 0.000001;     //dokladnosc
         Scanner sc = new Scanner(System.in).useLocale(Locale.US);//Locale żeby przyjmował kropkę a nie przecinek
         double dxForAccuracy;
         System.out.println("Podaj dokladnosc dx");
@@ -29,22 +29,20 @@ public class ParallelIntegralCalculator {
         System.out.println("Liczba zadań (N_TASKS): " + N_TASKS);
         System.out.println("-------------------------------------");
 
-        // Tworzenie puli wątków o stałej liczbie wątków
+        //Tworzenie puli wątków o stałej liczbie wątków
         ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
         List<Future<Double>> futures = new ArrayList<>();
 
-        // Obliczenie szerokości pojedynczego podprzedziału dla każdego zadania
+        //Obliczenie szerokości pojedynczego podprzedziału dla każdego zadania
         double subIntervalWidth = (totalEnd - totalStart) / N_TASKS;
 
         long startTime = System.nanoTime(); // Pomiar czasu rozpoczęcia
 
-        // d) Zadania tworzone i przekazywane do wykonania w jednej pętli
+        //Zadania tworzone i przekazywane do wykonania w jednej pętli
         for (int i = 0; i < N_TASKS; i++) {
             double subIntervalStart = totalStart + i * subIntervalWidth;
             double subIntervalEnd = subIntervalStart + subIntervalWidth;
 
-            // Zapewnienie, że ostatni podprzedział dokładnie kończy się na totalEnd,
-            // aby uniknąć błędów zmiennoprzecinkowych
             if (i == N_TASKS - 1) {
                 subIntervalEnd = totalEnd;
             }
@@ -55,12 +53,12 @@ public class ParallelIntegralCalculator {
             futures.add(executor.submit(task));
         }
 
-        // Zamknięcie executora. Nie przyjmuje nowych zadań, ale czeka na zakończenie bieżących.
+        //wiecej nie przyjmuje ale czeka na zakonczenie
         executor.shutdown();
 
         double totalIntegralResult = 0;
 
-        // e) Wyniki odbierane w kolejnej pętli, aby umożliwić działanie równoległe
+        //Wyniki odbierane w kolejnej pętli, aby umożliwić działanie równoległe
         for (Future<Double> future : futures) {
             try {
                 totalIntegralResult += future.get(); // Blokuje do momentu, aż wynik będzie dostępny
@@ -70,12 +68,6 @@ public class ParallelIntegralCalculator {
             }
         }
         
-        try {//w teorii future.get gwarantuje czekanie na zakonczenie wszystkich watkow ale to jest dodatkowe zabezpieczenie
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            System.err.println("Przerwanie oczekiwania na zakończenie executora: " + e.getMessage());
-        }
-
         long endTime = System.nanoTime();   // Pomiar czasu zakończenia
         long duration = (endTime - startTime) / 1_000_000; // Czas w milisekundach
 

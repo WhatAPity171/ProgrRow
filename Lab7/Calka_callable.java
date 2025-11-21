@@ -1,7 +1,6 @@
-// Calka_callable.java
-import java.util.concurrent.Callable; // Odkomentowane
+import java.util.concurrent.Callable;
 
-public class Calka_callable implements Callable<Double> { // Odkomentowane i zaimplementowane
+public class Calka_callable implements Callable<Double> {
     
     private double dx;
     private double xp;
@@ -17,7 +16,7 @@ public class Calka_callable implements Callable<Double> { // Odkomentowane i zai
             this.dx = 0;
         } else {
             this.N = (int) Math.ceil((xk - xp) / dx);
-            if (this.N == 0) { // Upewnij się, że N jest co najmniej 1 dla niezerowego przedziału
+            if (this.N == 0) {
                 this.N = 1;
             }
             this.dx = (xk - xp) / this.N; 
@@ -43,7 +42,6 @@ public class Calka_callable implements Callable<Double> { // Odkomentowane i zai
         return calka;
     }
     
-    // Uzupełnienie kodu klasy o wymaganą przez interfejs funkcję
     @Override
     public Double call() throws Exception {
         return compute_integral();
