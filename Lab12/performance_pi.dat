@@ -1,0 +1,6 @@
+=== Testy wydajnościowe oblicz_PI ===
+# processes time
+1 0.045445
+2 0.028346
+4 0.031295
+8 0.012383

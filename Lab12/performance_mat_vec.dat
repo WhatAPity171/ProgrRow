@@ -1,0 +1,5 @@
+=== Testy wydajnościowe mat_vec_row_MPI ===
+# processes time speedup efficiency
+2 0.059678 0.837381 0.418690
+4 0.031972 1.707277 0.426819
+8 0.030122 4.652350 0.581544
